@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Reverse</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dashboard-body">
+    
+    <header class="dashboard-header">
+        <div class="header-content">
+            <div class="brand-header">REVERSE</div>
+            <h1>Your Dashboard</h1>
+            <p>Manage your subscriptions and account settings</p>
+        </div>
+    </header>
+
+    <nav class="nav-tabs">
+        <button class="tab-btn active" data-tab="main">
+            <span class="tab-icon">■</span>
+            <span class="tab-text">Main</span>
+        </button>
+        <button class="tab-btn" data-tab="keys">
+            <span class="tab-icon">■</span>
+            <span class="tab-text">Keys</span>
+        </button>
+        <button class="tab-btn" data-tab="settings">
+            <span class="tab-icon">■</span>
+            <span class="tab-text">Settings</span>
+        </button>
+    </nav>
+
+    <main class="dashboard-main">
+        
+        <div class="tab-content active" id="tab-main">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-label">Balance</span>
+                        <button class="btn-topup" onclick="showToast('Top-up feature coming soon!', 'info')">Top Up</button>
+                    </div>
+                    <div class="stat-value green" id="balance">€0.00</div>
+                    <div class="stat-change">Available balance</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-label">Active Keys</span>
+                    </div>
+                    <div class="stat-value" id="active-keys">0</div>
+                    <div class="stat-change">Licensed products</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-label">Total Orders</span>
+                    </div>
+                    <div class="stat-value" id="total-orders">0</div>
+                    <div class="stat-change">All time purchases</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-label">Member Since</span>
+                    </div>
+                    <div class="stat-value small" id="member-since">-</div>
+                    <div class="stat-change">Account created</div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <h2 class="section-title">Active Subscriptions</h2>
+                <p class="section-subtitle">Manage your active product licenses and view expiration dates</p>
+                <div id="subscriptions-area"></div>
+            </div>
+
+            <button class="btn-download" onclick="downloadGame()">
+                <span class="icon-download">↓</span>
+                <span>Download Game Client</span>
+            </button>
+        </div>
+
+        <div class="tab-content" id="tab-keys">
+            <div class="section-card centered">
+                <h2 class="section-title">Redeem Product Key</h2>
+                <p class="section-subtitle">Enter your product key to activate new products</p>
+                
+                <form class="redeem-box" id="redeemForm">
+                    <input 
+                        type="text" 
+                        id="redeem-input" 
+                        class="redeem-input" 
+                        placeholder="XXXX-XXXX-XXXX-XXXX"
+                        pattern="[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}"
+                        required
+                    >
+                    <button type="submit" class="btn-redeem">Redeem</button>
+                </form>
+
+                <div class="keys-list" id="keys-list"></div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="tab-settings">
+            <div class="section-card">
+                <h2 class="section-title">Account Settings</h2>
+                
+                <div class="settings-list">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>Username</h3>
+                            <p id="settings-username">Loading...</p>
+                        </div>
+                        <div class="status-badge active">Verified</div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>Email Address</h3>
+                            <p id="settings-email">user@example.com</p>
+                        </div>
+                        <button class="btn-secondary" onclick="showToast('Email change coming soon', 'info')">Change</button>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>Change Password</h3>
+                            <p>Update your password for security</p>
+                        </div>
+                        <button class="btn-secondary" onclick="Modal.open('password-modal')">Change</button>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>Two-Factor Authentication</h3>
+                            <p>Add an extra layer of security</p>
+                        </div>
+                        <button class="btn-secondary" onclick="showToast('2FA coming soon', 'info')">Enable</button>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>Account Status</h3>
+                            <p>Your account is active and in good standing</p>
+                        </div>
+                        <div class="status-badge active">Active</div>
+                    </div>
+                </div>
+
+                <button class="btn-logout" onclick="logout()">
+                    <span>→</span> Logout
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="password-modal" class="modal">
+        <div class="modal-backdrop" onclick="Modal.close('password-modal')"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Change Password</h3>
+                <button class="modal-close" onclick="Modal.close('password-modal')">&times;</button>
+            </div>
+            <form id="passwordForm">
+                <div class="form-row">
+                    <label for="current-password">Current Password</label>
+                    <input type="password" id="current-password" name="currentPassword" required>
+                </div>
+                <div class="form-row">
+                    <label for="new-password">New Password</label>
+                    <input type="password" id="new-password" name="newPassword" minlength="6" required>
+                    <small class="form-hint">Minimum 6 characters</small>
+                </div>
+                <div class="form-row">
+                    <label for="confirm-password">Confirm New Password</label>
+                    <input type="password" id="confirm-password" name="confirmPassword" minlength="6" required>
+                </div>
+                <button type="submit" class="btn-primary">Update Password</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Auth check
+        const user = Auth.getCurrentUser();
+        if (!user) {
+            window.location.href = 'login.html';
+        }
+        if (user.isAdmin) {
+            window.location.href = 'admin.html';
+        }
+
+        // Initialize dashboard
+        Dashboard.init(user);
+
+        // Tab switching - FIXED
+        function switchTab(tabName) {
+            // Remove active from all tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Add active to selected
+            const selectedBtn = document.querySelector(`[data-tab="${tabName}"]`);
+            const selectedContent = document.getElementById(`tab-${tabName}`);
+            
+            if (selectedBtn && selectedContent) {
+                selectedBtn.classList.add('active');
+                selectedContent.classList.add('active');
+            }
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Add click handlers to tabs
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const tabName = this.getAttribute('data-tab');
+                switchTab(tabName);
+            });
+        });
+
+        // Key redemption
+        const redeemForm = document.getElementById('redeemForm');
+        const redeemInput = document.getElementById('redeem-input');
+
+        redeemInput.addEventListener('input', (e) => {
+            let value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            let formatted = value.match(/.{1,4}/g)?.join('-') || value;
+            e.target.value = formatted.substring(0, 19);
+        });
+
+        redeemForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const key = redeemInput.value.trim().toUpperCase();
+            
+            if (!key) {
+                showToast('Please enter a key', 'error');
+                return;
+            }
+
+            const result = KeyManager.redeem(key, user);
+            
+            if (result.success) {
+                showToast(result.message, 'success');
+                redeemInput.value = '';
+                Dashboard.refresh(user);
+            } else {
+                showToast(result.message, 'error');
+            }
+        });
+
+        // Password change
+        const passwordForm = document.getElementById('passwordForm');
+        passwordForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(passwordForm);
+            const currentPassword = formData.get('currentPassword');
+            const newPassword = formData.get('newPassword');
+            const confirmPassword = formData.get('confirmPassword');
+
+            const result = Auth.changePassword(currentPassword, newPassword, confirmPassword);
+            
+            if (result.success) {
+                showToast(result.message, 'success');
+                Modal.close('password-modal');
+                passwordForm.reset();
+            } else {
+                showToast(result.message, 'error');
+            }
+        });
+
+        // Download game
+        function downloadGame() {
+            showToast('Preparing download...', 'success');
+            setTimeout(() => {
+                showToast('Game client download started!', 'success');
+            }, 1000);
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                Auth.logout();
+                showToast('Logged out successfully', 'success');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 500);
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.altKey && e.key >= '1' && e.key <= '3') {
+                e.preventDefault();
+                const tabs = ['main', 'keys', 'settings'];
+                const tabIndex = parseInt(e.key) - 1;
+                switchTab(tabs[tabIndex]);
+            }
+        });
+
+        // Welcome message
+        setTimeout(() => {
+            showToast(`Welcome back, ${user.username}!`, 'success');
+        }, 500);
+    </script>
+</body>
+</html>

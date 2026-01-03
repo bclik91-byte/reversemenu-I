@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REVERSE - Premium Game Access</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="landing-page">
+        <div class="landing-hero">
+            <div class="brand-logo">REVERSE</div>
+            <h1>Premium Game Access Platform</h1>
+            <p>Secure, Fast, Professional</p>
+            
+            <div class="landing-actions">
+                <a href="login.html" class="btn-hero btn-primary">
+                    <span>Login</span>
+                    <span class="icon">→</span>
+                </a>
+                <a href="register.html" class="btn-hero btn-secondary">
+                    <span>Register</span>
+                    <span class="icon">+</span>
+                </a>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <h3>Secure</h3>
+                    <p>Your data is protected</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Fast</h3>
+                    <p>Instant key activation</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💎</div>
+                    <h3>Premium</h3>
+                    <p>Best quality service</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="landing-footer">
+            <p>© 2025 REVERSE. All rights reserved.</p>
+        </div>
+    </div>
+
+    <script>
+        // Check if already logged in
+        const currentUser = localStorage.getItem('currentUser');
+        if (currentUser) {
+            const userData = JSON.parse(localStorage.getItem('user_' + currentUser));
+            if (userData) {
+                if (userData.isAdmin) {
+                    window.location.href = 'admin.html';
+                } else {
+                    window.location.href = 'dashboard.html';
+                }
+            }
+        }
+    </script>
+</body>
+</html>
