@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Reverse</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="auth-wrapper">
+        <div class="auth-container">
+            <div class="auth-header">
+                <div class="brand">REVERSE</div>
+                <h1>Create Account</h1>
+                <p>Register with your product key</p>
+            </div>
+
+            <form class="auth-form" onsubmit="return false;">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="username" placeholder="Choose username" autocomplete="username">
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password" placeholder="Choose password" autocomplete="new-password">
+                </div>
+
+                <div class="form-group">
+                    <label>Product Key</label>
+                    <input type="text" id="key" placeholder="XXXX-XXXX-XXXX-XXXX" style="font-family: monospace;">
+                </div>
+
+                <button type="button" class="btn-primary" onclick="handleRegister()">
+                    Create Account
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Already have an account? <a href="login.html">Sign in</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const validKeys = [
+            "DEMO-1234-ABCD-5678",
+            "TEST-KEY1-2025-GAME",
+            "FREE-BETA-KEY9-2025",
+            "ADMIN-2025-MASTER-KEY"
+        ];
+
+        function handleRegister() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const key = document.getElementById('key').value.trim().toUpperCase();
+
+            if (!username || !password || !key) {
+                showError('Please fill in all fields');
+                return;
+            }
+
+            if (username.length < 3) {
+                showError('Username must be at least 3 characters');
+                return;
+            }
+
+            if (password.length < 6) {
+                showError('Password must be at least 6 characters');
+                return;
+            }
+
+            if (localStorage.getItem('user_' + username)) {
+                showError('Username already exists');
+                return;
+            }
+
+            if (!validKeys.includes(key)) {
+                showError('Invalid or already used key');
+                return;
+            }
+
+            const isAdmin = key.startsWith('ADMIN-');
+
+            const userData = {
+                username: username,
+                password: password,
+                isAdmin: isAdmin,
+                keys: [{
+                    code: key,
+                    game: 'Reverse',
+                    active: true,
+                    activatedDate: new Date().toLocaleDateString('de-DE'),
+                    expiryDate: null
+                }],
+                joinDate: new Date().toLocaleDateString('de-DE'),
+                balance: 0
+            };
+
+            localStorage.setItem('user_' + username, JSON.stringify(userData));
+            
+            showSuccess('Account created successfully!');
+            
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 1500);
+        }
+
+        function showError(msg) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-toast';
+            errorDiv.textContent = msg;
+            document.body.appendChild(errorDiv);
+            setTimeout(() => errorDiv.remove(), 3000);
+        }
+
+        function showSuccess(msg) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-toast';
+            successDiv.textContent = msg;
+            document.body.appendChild(successDiv);
+            setTimeout(() => successDiv.remove(), 3000);
+        }
+
+        document.getElementById('key').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleRegister();
+        });
+    </script>
+</body>
+</html>
